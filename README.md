@@ -1,6 +1,6 @@
 # wg
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/point-c/wg@v0.0.1.svg)](https://pkg.go.dev/github.com/point-c/wg@v0.0.1)
+[![Go Reference](https://pkg.go.dev/badge/github.com/point-c/wg@v0.0.1.svg)](https://godocs.io/github.com/point-c/wg@v0.0.2)
 
 wg is a library designed to facilitate the creation and management of userland WireGuard networks. It interfaces with various components of the wireguard-go library, offering a Go-based API for network operations.
 
