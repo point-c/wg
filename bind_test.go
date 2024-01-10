@@ -7,5 +7,9 @@ import (
 )
 
 func TestDefaultBind(t *testing.T) {
-	require.IsType(t, conn.NewDefaultBind(), DefaultBind())
+	exp := conn.NewDefaultBind()
+	defer exp.Close()
+	got := DefaultBind()
+	defer got.Close()
+	require.IsType(t, exp, got)
 }
