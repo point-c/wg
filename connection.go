@@ -16,6 +16,10 @@ type Wireguard struct {
 	closers []func() error
 }
 
+var (
+	ErrNoDeviceSpecified = errors.New("no device specified")
+)
+
 // New allows the creating of a new wireguard interface.
 func New(opts ...Option) (_ *Wireguard, err error) {
 	var o options
@@ -27,7 +31,7 @@ func New(opts ...Option) (_ *Wireguard, err error) {
 	defer o.cleanUp(&failed, &err)
 
 	if o.tun == nil {
-		return nil, errors.New("no device specified")
+		return nil, ErrNoDeviceSpecified
 	}
 
 	if o.bind == nil {
@@ -55,12 +59,12 @@ func New(opts ...Option) (_ *Wireguard, err error) {
 }
 
 // GetConfig gets the raw config from an IPC get=1 operation.
-func (c *Wireguard) GetConfig() (wgapi.IPC, error) {
+func (c *Wireguard) GetConfig() (v wgapi.IPC, err error) {
 	var ipc wgapi.IPCGet
-	if err := c.dev.IpcGetOperation(&ipc); err != nil {
-		return nil, err
+	if err = c.dev.IpcGetOperation(&ipc); err == nil {
+		v, err = ipc.Value()
 	}
-	return ipc.Value()
+	return
 }
 
 // SetConfig performs an IPC set=1 operation.

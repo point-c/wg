@@ -43,7 +43,6 @@ type Netstack struct {
 	events     chan tun.Event
 	batchSize  int
 	close      sync.Once
-	closeErr   error
 	done       chan struct{}
 	read       chan []byte
 	defaultNIC tcpip.NICID
@@ -82,16 +81,8 @@ func NewNetstack(mtu int, batchSize int, channelSize int) (*Netstack, error) {
 	}
 	d.ep.AddNotify((*writeNotify)(d))
 
-	// Wireguard-go does this
-	var enableSACK tcpip.TCPSACKEnabled = true
-	if err := d.stack.SetTransportProtocolOption(tcp.ProtocolNumber, &enableSACK); err != nil {
-		return nil, &TCPIPError{Err: err}
-	}
-
-	// Add the endpoint to the stack
-	d.defaultNIC = tcpip.NICID(d.stack.UniqueID())
-	if err := d.stack.CreateNICWithOptions(d.defaultNIC, d.ep, stack.NICOptions{Name: ""}); err != nil {
-		return nil, &TCPIPError{Err: err}
+	if err := SetStackOptions(d.stack, d.ep, &d.defaultNIC); err != nil {
+		return nil, err
 	}
 
 	// Important! This allows us to dial/listen on whatever address we want!
@@ -106,6 +97,21 @@ func NewNetstack(mtu int, batchSize int, channelSize int) (*Netstack, error) {
 	return d, nil
 }
 
+var SetStackOptions = func(s *stack.Stack, ep *channel.Endpoint, id *tcpip.NICID) error {
+	// Wireguard-go does this
+	var enableSACK tcpip.TCPSACKEnabled = true
+	if err := s.SetTransportProtocolOption(tcp.ProtocolNumber, &enableSACK); err != nil {
+		return &TCPIPError{Err: err}
+	}
+
+	// Add the endpoint to the stack
+	*id = tcpip.NICID(s.UniqueID())
+	if err := s.CreateNICWithOptions(*id, ep, stack.NICOptions{Name: ""}); err != nil {
+		return &TCPIPError{Err: err}
+	}
+	return nil
+}
+
 // Close closes the network stack rendering it unusable in the future.
 func (d *Netstack) Close() error {
 	d.close.Do(func() {
@@ -114,7 +120,7 @@ func (d *Netstack) Close() error {
 		d.ep.Close()
 		d.ep.Wait()
 	})
-	return d.closeErr
+	return nil
 }
 
 var _ channel.Notification = (*writeNotify)(nil)

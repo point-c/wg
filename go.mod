@@ -3,6 +3,7 @@ module github.com/point-c/wg
 go 1.21.5
 
 require (
+	github.com/point-c/simplewg v0.0.1
 	github.com/point-c/wgapi v0.0.1
 	github.com/point-c/wglog v0.0.2
 	github.com/stretchr/testify v1.8.4

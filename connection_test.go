@@ -1,8 +1,8 @@
-package wg_test
+package wg
 
 import (
 	"context"
-	"github.com/point-c/wg"
+	"errors"
 	"github.com/point-c/wgapi"
 	"github.com/point-c/wgapi/wgconfig"
 	"github.com/point-c/wglog"
@@ -11,8 +11,11 @@ import (
 	"golang.zx2c4.com/wireguard/conn"
 	"golang.zx2c4.com/wireguard/conn/bindtest"
 	"golang.zx2c4.com/wireguard/device"
+	"io"
 	"math"
 	"net"
+	"slices"
+	"strings"
 	"testing"
 	"time"
 )
@@ -76,10 +79,10 @@ func textCtxDeadline(t *testing.T, ctx context.Context) (context.Context, contex
 }
 
 type NetPair struct {
-	Client       *wg.Net
+	Client       *Net
 	ClientCloser func()
 	ClientIP     net.IP
-	Server       *wg.Net
+	Server       *Net
 	ServerCloser func()
 	t            testing.TB
 	Bindcloser   func()
@@ -124,15 +127,15 @@ func netPair(t testing.TB) *NetPair {
 	return &pair
 }
 
-func GetNet(t testing.TB, bind conn.Bind, cfg wgapi.Configurable) (*wg.Net, func()) {
+func GetNet(t testing.TB, bind conn.Bind, cfg wgapi.Configurable) (*Net, func()) {
 	t.Helper()
 	logger := wglog.Noop()
 	if logWG {
 		logger = testLogger(t)
 	}
 
-	var n *wg.Net
-	c, err := wg.New(wg.OptionNetDevice(&n), wg.OptionBind(bind), wg.OptionConfig(cfg), wg.OptionLogger(logger))
+	var n *Net
+	c, err := New(OptionNetDevice(&n), OptionBind(bind), OptionConfig(cfg), OptionLogger(logger))
 	if err != nil {
 		t.Log(err)
 		t.Fail()
@@ -160,4 +163,120 @@ func testLogger(t testing.TB) *device.Logger {
 			t.Logf("INFO:  "+format, args...)
 		},
 	}
+}
+
+func TestNew(t *testing.T) {
+	bind := DefaultBind
+	t.Cleanup(func() { DefaultBind = bind })
+	DefaultBind = func() Bind {
+		return bindtest.NewChannelBinds()[0]
+	}
+
+	t.Run("error applying options", func(t *testing.T) {
+		errExp := errors.New("test")
+		v, err := New(OptionErr(errExp))
+		require.ErrorIs(t, err, errExp)
+		require.Nil(t, v)
+	})
+
+	t.Run("no tun", func(t *testing.T) {
+		v, err := New()
+		require.ErrorIs(t, err, ErrNoDeviceSpecified)
+		require.Nil(t, v)
+	})
+
+	t.Run("use default bind", func(t *testing.T) {
+		var n *Net
+		v, err := New(
+			OptionNetDevice(&n),
+		)
+		require.NoError(t, err)
+		require.NotNil(t, v)
+		require.NoError(t, v.Close())
+	})
+
+	t.Run("set config", func(t *testing.T) {
+		var n *Net
+		v, err := New(
+			OptionNetDevice(&n),
+			OptionConfig(wgapi.IPC{}),
+		)
+		require.NoError(t, err)
+		require.NotNil(t, v)
+		require.NoError(t, v.Close())
+	})
+
+	t.Run("bad set config", func(t *testing.T) {
+		var n *Net
+		v, err := New(
+			OptionNetDevice(&n),
+			OptionConfig(testErrConfig{t}),
+		)
+		require.Error(t, err)
+		require.Nil(t, v)
+	})
+
+	t.Run("bad up", func(t *testing.T) {
+		var n *Net
+		b := testErrBadBindOpen{
+			TB:  t,
+			err: errors.New("test"),
+		}
+		v, err := New(
+			OptionNetDevice(&n),
+			OptionBind(b),
+		)
+		require.ErrorIs(t, err, b.err)
+		require.Nil(t, v)
+	})
+}
+
+type testErrBadBindOpen struct {
+	testing.TB
+	err error
+}
+
+func (t testErrBadBindOpen) Open(port uint16) (fns []conn.ReceiveFunc, actualPort uint16, err error) {
+	t.Helper()
+	return nil, port, t.err
+}
+func (t testErrBadBindOpen) Close() error                       { t.Helper(); return nil }
+func (t testErrBadBindOpen) SetMark(uint32) error               { t.Helper(); panic("not implemented") }
+func (t testErrBadBindOpen) Send([][]byte, conn.Endpoint) error { t.Helper(); panic("not implemented") }
+func (t testErrBadBindOpen) ParseEndpoint(string) (conn.Endpoint, error) {
+	t.Helper()
+	panic("not implemented")
+}
+func (t testErrBadBindOpen) BatchSize() int { return 0 }
+
+type testErrConfig struct{ testing.TB }
+
+func (t testErrConfig) WGConfig() io.Reader {
+	t.Helper()
+	return strings.NewReader(`foo=bar
+`)
+}
+
+func TestGetConfig(t *testing.T) {
+	bind := DefaultBind
+	t.Cleanup(func() { DefaultBind = bind })
+	testBind := bindtest.NewChannelBinds()[0]
+	DefaultBind = func() Bind {
+		return testBind
+	}
+	var n *Net
+
+	cfgExp := wgapi.IPC{wgapi.ListenPort(4)}
+	v, err := New(
+		OptionNetDevice(&n),
+		OptionConfig(cfgExp),
+	)
+	require.NoError(t, err)
+	require.NotNil(t, v)
+	cfg, err := v.GetConfig()
+	require.NoError(t, err)
+	require.Len(t, cfg, 1)
+	p := cfg[0]
+	require.IsType(t, wgapi.ListenPort(0), p)
+	require.True(t, slices.Contains([]wgapi.ListenPort{2, 4}, p.(wgapi.ListenPort)))
 }
