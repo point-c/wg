@@ -3,6 +3,7 @@ package wg
 import (
 	"context"
 	"errors"
+	"github.com/point-c/ipcheck"
 	"github.com/point-c/wgapi"
 	"github.com/point-c/wgapi/wgconfig"
 	"github.com/point-c/wglog"
@@ -31,7 +32,7 @@ func TestTCPConnection(t *testing.T) {
 	rand.Seed(uint64(time.Now().UnixMicro()))
 	rand8 := func() uint8 { return uint8(rand.Intn(math.MaxUint8) + 1) }
 	remoteAddr := testLoopbackIP
-	for IsBogon(remoteAddr) {
+	for ipcheck.IsBogon(remoteAddr) {
 		remoteAddr = net.IPv4(rand8(), rand8(), rand8(), 1)
 	}
 	remotePort := uint16(rand8() * rand8())

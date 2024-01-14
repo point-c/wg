@@ -3,6 +3,7 @@ package wg
 import (
 	"context"
 	"errors"
+	"github.com/point-c/ipcheck"
 	"github.com/point-c/simplewg"
 	"github.com/stretchr/testify/require"
 	"gvisor.dev/gvisor/pkg/buffer"
@@ -208,7 +209,7 @@ func TestNetstackListen(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, listener)
 	_, err = n.Listen(&net.TCPAddr{IP: testLoopbackIP})
-	require.ErrorIs(t, err, ErrInvalidLocalIP)
+	require.ErrorIs(t, err, ipcheck.ErrInvalidLocalIP)
 }
 
 func TestNetstackListenPacket(t *testing.T) {
@@ -220,7 +221,7 @@ func TestNetstackListenPacket(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, packetConn)
 	_, err = n.ListenPacket(&net.UDPAddr{IP: testLoopbackIP})
-	require.ErrorIs(t, err, ErrInvalidLocalIP)
+	require.ErrorIs(t, err, ipcheck.ErrInvalidLocalIP)
 }
 
 func TestDialerDialTCP(t *testing.T) {
@@ -261,14 +262,14 @@ func TestDialerDialTCP(t *testing.T) {
 			listen: testRemoteIP,
 			remote: testRemoteIP,
 			local:  testLoopbackIP,
-			err:    ErrInvalidLocalIP,
+			err:    ipcheck.ErrInvalidLocalIP,
 		},
 		{
 			name:   "invalid remote",
 			listen: testRemoteIP,
 			remote: testLoopbackIP,
 			local:  testLocalIP,
-			err:    ErrInvalidRemoteIP,
+			err:    ipcheck.ErrInvalidRemoteIP,
 		},
 	}
 
@@ -356,127 +357,7 @@ func TestDialerDialUDP(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, packetConn)
 	_, err = n.Dialer(testLocalIP, 0).DialUDP(&net.UDPAddr{IP: testLoopbackIP})
-	require.ErrorIs(t, err, ErrInvalidRemoteIP)
+	require.ErrorIs(t, err, ipcheck.ErrInvalidRemoteIP)
 	_, err = n.Dialer(testLoopbackIP, 0).DialUDP(&net.UDPAddr{IP: testLocalIP})
-	require.ErrorIs(t, err, ErrInvalidLocalIP)
-}
-
-func testWantFn(t testing.TB, want bool) func(require.TestingT, bool, ...any) {
-	t.Helper()
-	if want {
-		return require.True
-	}
-	return require.False
-}
-
-func TestIsBogon(t *testing.T) {
-	tests := []struct {
-		name string
-		args net.IP
-		want bool
-	}{
-		{
-			name: "loopback",
-			args: testLoopbackIP,
-			want: true,
-		},
-		{
-			name: "private",
-			args: testRemoteIP,
-		},
-		{
-			name: "IPv4bcast",
-			args: net.IPv4bcast,
-			want: true,
-		},
-		{
-			name: "IPv4allrouter",
-			args: net.IPv4allrouter,
-			want: true,
-		},
-		{
-			name: "IPv4allsys",
-			args: net.IPv4allsys,
-			want: true,
-		},
-		{
-			name: "linklocal",
-			args: net.IPv4(169, 254, 1, 1),
-			want: true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			testWantFn(t, tt.want)(t, IsBogon(tt.args))
-		})
-	}
-}
-
-func TestIsLinkLocal(t *testing.T) {
-	tests := []struct {
-		name string
-		args net.IP
-		want bool
-	}{
-		{
-			name: "ok",
-			args: net.IPv4(169, 254, 1, 1),
-			want: true,
-		},
-		{
-			name: "fail",
-			args: testLocalIP,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			testWantFn(t, tt.want)(t, IsLinkLocal(tt.args))
-		})
-	}
-}
-
-func TestIsLoopback(t *testing.T) {
-	tests := []struct {
-		name string
-		args net.IP
-		want bool
-	}{
-		{
-			name: "loopback",
-			args: testLoopbackIP,
-			want: true,
-		},
-		{
-			name: "private",
-			args: testRemoteIP,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			testWantFn(t, tt.want)(t, IsLoopback(tt.args))
-		})
-	}
-}
-
-func TestIsPrivateNetwork(t *testing.T) {
-	tests := []struct {
-		name string
-		args net.IP
-		want bool
-	}{
-		{
-			name: "loopback",
-			args: testLoopbackIP,
-		},
-		{
-			name: "private",
-			args: testRemoteIP,
-			want: true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			testWantFn(t, tt.want)(t, IsPrivateNetwork(tt.args))
-		})
-	}
+	require.ErrorIs(t, err, ipcheck.ErrInvalidLocalIP)
 }

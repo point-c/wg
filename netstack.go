@@ -2,7 +2,7 @@ package wg
 
 import (
 	"context"
-	"errors"
+	"github.com/point-c/ipcheck"
 	"golang.zx2c4.com/wireguard/conn"
 	"golang.zx2c4.com/wireguard/device"
 	"golang.zx2c4.com/wireguard/tun"
@@ -217,8 +217,8 @@ func (d *Netstack) Net() *Net { return (*Net)(d) }
 
 // Listen listens with the TCP protocol on the given address.
 func (n *Net) Listen(addr *net.TCPAddr) (net.Listener, error) {
-	if IsBogon(addr.IP) {
-		return nil, ErrInvalidLocalIP
+	if ipcheck.IsBogon(addr.IP) {
+		return nil, ipcheck.ErrInvalidLocalIP
 	}
 
 	return gonet.ListenTCP(n.stack, tcpip.FullAddress{
@@ -230,8 +230,8 @@ func (n *Net) Listen(addr *net.TCPAddr) (net.Listener, error) {
 
 // ListenPacket listens with the UDP protocol on the given address
 func (n *Net) ListenPacket(addr *net.UDPAddr) (net.PacketConn, error) {
-	if IsBogon(addr.IP) {
-		return nil, ErrInvalidLocalIP
+	if ipcheck.IsBogon(addr.IP) {
+		return nil, ipcheck.ErrInvalidLocalIP
 	}
 
 	return gonet.DialUDP(n.stack, &tcpip.FullAddress{
@@ -253,54 +253,12 @@ func (n *Net) Dialer(laddr net.IP, port uint16) *Dialer {
 	}
 }
 
-func IsLinkLocal(ip net.IP) bool {
-	_, linklocalv6, _ := net.ParseCIDR("fe80::/64")
-	_, linklocalv4, _ := net.ParseCIDR("169.254.0.0/16")
-	return linklocalv6.Contains(ip) || linklocalv4.Contains(ip)
-}
-
-func IsLoopback(ip net.IP) bool {
-	localv6 := net.ParseIP("::1")
-	_, localv4, _ := net.ParseCIDR("127.0.0.1/8")
-	return localv6.Equal(ip) || localv4.Contains(ip)
-}
-
-func IsPrivateNetwork(ip net.IP) bool {
-	_, privatev6, _ := net.ParseCIDR("fd00::/8")
-	_, priv24, _ := net.ParseCIDR("10.0.0.0/8")
-	_, priv20, _ := net.ParseCIDR("172.16.0.0/12")
-	_, priv16, _ := net.ParseCIDR("192.168.0.0/16")
-	return privatev6.Contains(ip) || priv16.Contains(ip) || priv20.Contains(ip) || priv24.Contains(ip)
-}
-
-// IsBogon returns true if dialing the address would fail due to gonet.
-// [IsPrivateNetwork] is left out because it will still remote, but it can be used to help check incoming ip addresses.
-func IsBogon(ip net.IP) bool {
-	for _, filter := range []func(net.IP) bool{
-		IsLoopback,
-		IsLinkLocal,
-		net.IPv4allsys.Equal,
-		net.IPv4allrouter.Equal,
-		net.IPv4bcast.Equal,
-	} {
-		if filter(ip) {
-			return true
-		}
-	}
-	return false
-}
-
-var (
-	ErrInvalidLocalIP  = errors.New("local ip is invalid")
-	ErrInvalidRemoteIP = errors.New("remote ip is invalid")
-)
-
 // DialTCP initiates a TCP connection with a remote TCP listener.
 func (d *Dialer) DialTCP(ctx context.Context, addr *net.TCPAddr) (net.Conn, error) {
-	if IsBogon(d.laddr.Addr.AsSlice()) {
-		return nil, ErrInvalidLocalIP
-	} else if IsBogon(addr.IP) {
-		return nil, ErrInvalidRemoteIP
+	if ipcheck.IsBogon(d.laddr.Addr.AsSlice()) {
+		return nil, ipcheck.ErrInvalidLocalIP
+	} else if ipcheck.IsBogon(addr.IP) {
+		return nil, ipcheck.ErrInvalidRemoteIP
 	}
 
 	return gonet.DialTCPWithBind(ctx, d.net.stack, d.laddr, tcpip.FullAddress{
@@ -313,10 +271,10 @@ func (d *Dialer) DialTCP(ctx context.Context, addr *net.TCPAddr) (net.Conn, erro
 // DialUDP dials a UDP network.
 // Addresses in the 127.0.0.1/24 range
 func (d *Dialer) DialUDP(addr *net.UDPAddr) (net.PacketConn, error) {
-	if IsBogon(d.laddr.Addr.AsSlice()) {
-		return nil, ErrInvalidLocalIP
-	} else if IsBogon(addr.IP) {
-		return nil, ErrInvalidRemoteIP
+	if ipcheck.IsBogon(d.laddr.Addr.AsSlice()) {
+		return nil, ipcheck.ErrInvalidLocalIP
+	} else if ipcheck.IsBogon(addr.IP) {
+		return nil, ipcheck.ErrInvalidRemoteIP
 	}
 
 	return gonet.DialUDP(d.net.stack, &d.laddr, &tcpip.FullAddress{
