@@ -3,16 +3,24 @@ package wg
 import (
 	"context"
 	"errors"
+	"github.com/point-c/simplewg"
 	"github.com/stretchr/testify/require"
 	"gvisor.dev/gvisor/pkg/buffer"
 	"gvisor.dev/gvisor/pkg/tcpip"
 	"gvisor.dev/gvisor/pkg/tcpip/link/channel"
 	"gvisor.dev/gvisor/pkg/tcpip/stack"
 	"gvisor.dev/gvisor/pkg/tcpip/transport/tcp"
+	"math"
 	"net"
 	"sync"
 	"testing"
 	"time"
+)
+
+var (
+	testLocalIP    = net.IPv4(192, 168, 0, 1)
+	testRemoteIP   = net.IPv4(192, 168, 0, 1)
+	testLoopbackIP = net.IPv4(127, 0, 0, 1)
 )
 
 func TestStackOptions(t *testing.T) {
@@ -195,39 +203,280 @@ func TestNetstackListen(t *testing.T) {
 	netstack, err := NewDefaultNetstack()
 	require.NoError(t, err)
 	defer netstack.Close()
-	listener, err := netstack.Net().Listen(&net.TCPAddr{IP: net.IPv4(127, 0, 0, 1), Port: 8080})
+	n := netstack.Net()
+	listener, err := n.Listen(&net.TCPAddr{IP: testLocalIP, Port: 8080})
 	require.NoError(t, err)
 	require.NotNil(t, listener)
+	_, err = n.Listen(&net.TCPAddr{IP: testLoopbackIP})
+	require.ErrorIs(t, err, ErrInvalidLocalIP)
 }
 
 func TestNetstackListenPacket(t *testing.T) {
 	netstack, err := NewDefaultNetstack()
 	require.NoError(t, err)
 	defer netstack.Close()
-	packetConn, err := netstack.Net().ListenPacket(&net.UDPAddr{IP: net.IPv4(127, 0, 0, 1), Port: 8080})
+	n := netstack.Net()
+	packetConn, err := n.ListenPacket(&net.UDPAddr{IP: testLocalIP, Port: 8080})
 	require.NoError(t, err)
 	require.NotNil(t, packetConn)
+	_, err = n.ListenPacket(&net.UDPAddr{IP: testLoopbackIP})
+	require.ErrorIs(t, err, ErrInvalidLocalIP)
 }
 
 func TestDialerDialTCP(t *testing.T) {
-	netstack, err := NewDefaultNetstack()
-	require.NoError(t, err)
-	defer netstack.Close()
-	n := netstack.Net()
-	dialer := n.Dialer(net.IPv4(127, 0, 0, 1), 8081)
-	ctx, cancel := context.WithCancel(context.TODO())
-	cancel()
-	conn, err := dialer.DialTCP(ctx, &net.TCPAddr{IP: net.IPv4(127, 0, 0, 1), Port: 8080})
-	require.Error(t, err)
-	require.Nil(t, conn)
+	t.Run("context cancelled", func(t *testing.T) {
+		netstack, err := NewDefaultNetstack()
+		require.NoError(t, err)
+		defer netstack.Close()
+		n := netstack.Net()
+		dialer := n.Dialer(testLocalIP, 8081)
+		ctx, cancel := context.WithCancel(context.TODO())
+		cancel()
+		conn, err := dialer.DialTCP(ctx, &net.TCPAddr{IP: testLocalIP, Port: 8080})
+		require.Error(t, err)
+		require.Nil(t, conn)
+	})
+
+	tests := []struct {
+		name   string
+		listen net.IP
+		local  net.IP
+		remote net.IP
+		err    error
+	}{
+		{
+			name:   "basic",
+			listen: testRemoteIP,
+			remote: testRemoteIP,
+			local:  testLocalIP,
+		},
+		{
+			name:   "listen 0.0.0.0",
+			listen: net.IPv4zero,
+			remote: testRemoteIP,
+			local:  testLocalIP,
+		},
+		{
+			name:   "invalid local",
+			listen: testRemoteIP,
+			remote: testRemoteIP,
+			local:  testLoopbackIP,
+			err:    ErrInvalidLocalIP,
+		},
+		{
+			name:   "invalid remote",
+			listen: testRemoteIP,
+			remote: testLoopbackIP,
+			local:  testLocalIP,
+			err:    ErrInvalidRemoteIP,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			var w simplewg.Wg
+			defer w.Wait()
+			netstack1, err := NewDefaultNetstack()
+			require.NoError(t, err)
+			defer netstack1.Close()
+			n1 := netstack1.Net()
+			netstack2, err := NewDefaultNetstack()
+			require.NoError(t, err)
+			defer netstack2.Close()
+			n2 := netstack2.Net()
+
+			ctx, cancel := context.WithCancel(context.TODO())
+			defer cancel()
+			if dl, ok := t.Deadline(); ok {
+				ctx, cancel = context.WithDeadline(ctx, dl)
+			} else {
+				if err != nil {
+					ctx, cancel = context.WithTimeout(ctx, time.Second*2)
+				} else {
+					ctx, cancel = context.WithTimeout(ctx, time.Second*5)
+				}
+			}
+			defer cancel()
+
+			done := make(chan struct{})
+			if tt.err != nil {
+				close(done)
+			} else {
+				copyNetstack := func(net1, net2 *Netstack) {
+					for {
+						b := [][]byte{make([]byte, math.MaxUint16)}
+						s := []int{0}
+						n, err := net1.Read(b, s, 0)
+						if err != nil {
+							return
+						} else if n == 0 {
+							continue
+						}
+						_, err = net2.Write(b, 0)
+						if err != nil {
+							t.Error(err.Error())
+						}
+					}
+				}
+				w.Go(func() { copyNetstack(netstack1, netstack2) })
+				w.Go(func() { copyNetstack(netstack2, netstack1) })
+				go func() {
+					defer close(done)
+					defer cancel()
+					ln, err := n1.Listen(&net.TCPAddr{IP: tt.listen, Port: 123})
+					require.NoError(t, err)
+					cn, err := ln.Accept()
+					require.NoError(t, err)
+					require.NotNil(t, cn)
+				}()
+			}
+
+			cn, err := n2.Dialer(tt.local, 0).DialTCP(ctx, &net.TCPAddr{IP: tt.remote, Port: 123})
+			if tt.err != nil {
+				require.ErrorIs(t, err, tt.err)
+				require.Nil(t, cn)
+			} else {
+				require.NoError(t, err)
+				require.NotNil(t, cn)
+				require.NoError(t, cn.Close())
+			}
+			<-done
+		})
+	}
 }
 
 func TestDialerDialUDP(t *testing.T) {
 	netstack, err := NewDefaultNetstack()
 	require.NoError(t, err)
 	defer netstack.Close()
-	dialer := netstack.Net().Dialer(net.IPv4(127, 0, 0, 1), 8080)
-	packetConn, err := dialer.DialUDP(&net.UDPAddr{IP: net.IPv4(127, 0, 0, 1), Port: 8081})
+	n := netstack.Net()
+	dialer := n.Dialer(testLocalIP, 8080)
+	packetConn, err := dialer.DialUDP(&net.UDPAddr{IP: testLocalIP, Port: 8081})
 	require.NoError(t, err)
 	require.NotNil(t, packetConn)
+	_, err = n.Dialer(testLocalIP, 0).DialUDP(&net.UDPAddr{IP: testLoopbackIP})
+	require.ErrorIs(t, err, ErrInvalidRemoteIP)
+	_, err = n.Dialer(testLoopbackIP, 0).DialUDP(&net.UDPAddr{IP: testLocalIP})
+	require.ErrorIs(t, err, ErrInvalidLocalIP)
+}
+
+func testWantFn(t testing.TB, want bool) func(require.TestingT, bool, ...any) {
+	t.Helper()
+	if want {
+		return require.True
+	}
+	return require.False
+}
+
+func TestIsBogon(t *testing.T) {
+	tests := []struct {
+		name string
+		args net.IP
+		want bool
+	}{
+		{
+			name: "loopback",
+			args: testLoopbackIP,
+			want: true,
+		},
+		{
+			name: "private",
+			args: testRemoteIP,
+		},
+		{
+			name: "IPv4bcast",
+			args: net.IPv4bcast,
+			want: true,
+		},
+		{
+			name: "IPv4allrouter",
+			args: net.IPv4allrouter,
+			want: true,
+		},
+		{
+			name: "IPv4allsys",
+			args: net.IPv4allsys,
+			want: true,
+		},
+		{
+			name: "linklocal",
+			args: net.IPv4(169, 254, 1, 1),
+			want: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testWantFn(t, tt.want)(t, IsBogon(tt.args))
+		})
+	}
+}
+
+func TestIsLinkLocal(t *testing.T) {
+	tests := []struct {
+		name string
+		args net.IP
+		want bool
+	}{
+		{
+			name: "ok",
+			args: net.IPv4(169, 254, 1, 1),
+			want: true,
+		},
+		{
+			name: "fail",
+			args: testLocalIP,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testWantFn(t, tt.want)(t, IsLinkLocal(tt.args))
+		})
+	}
+}
+
+func TestIsLoopback(t *testing.T) {
+	tests := []struct {
+		name string
+		args net.IP
+		want bool
+	}{
+		{
+			name: "loopback",
+			args: testLoopbackIP,
+			want: true,
+		},
+		{
+			name: "private",
+			args: testRemoteIP,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testWantFn(t, tt.want)(t, IsLoopback(tt.args))
+		})
+	}
+}
+
+func TestIsPrivateNetwork(t *testing.T) {
+	tests := []struct {
+		name string
+		args net.IP
+		want bool
+	}{
+		{
+			name: "loopback",
+			args: testLoopbackIP,
+		},
+		{
+			name: "private",
+			args: testRemoteIP,
+			want: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testWantFn(t, tt.want)(t, IsPrivateNetwork(tt.args))
+		})
+	}
 }

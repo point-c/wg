@@ -30,7 +30,10 @@ func TestTCPConnection(t *testing.T) {
 
 	rand.Seed(uint64(time.Now().UnixMicro()))
 	rand8 := func() uint8 { return uint8(rand.Intn(math.MaxUint8) + 1) }
-	remoteAddr := net.IPv4(rand8(), rand8(), rand8(), 1)
+	remoteAddr := testLoopbackIP
+	for IsBogon(remoteAddr) {
+		remoteAddr = net.IPv4(rand8(), rand8(), rand8(), 1)
+	}
 	remotePort := uint16(rand8() * rand8())
 
 	ln, err := pair.Client.Listen(&net.TCPAddr{IP: pair.ClientIP, Port: int(remotePort)})
