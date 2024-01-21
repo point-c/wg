@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#375EAB">
+
+  <title>wg - GoPages</title>
+
+<link type="text/css" rel="stylesheet" href="/wg/lib/godoc/style.css">
+
+<script>window.initFuncs = [];</script>
+<script src="/wg/lib/godoc/jquery.js" defer></script>
+
+
+
+
+<script>var goVersion = "go1.21.6";</script>
+<script src="/wg/lib/godoc/godocs.js" defer></script>
+
+</head>
+<body>
+
+<div id='lowframe' style="position: fixed; bottom: 0; left: 0; height: 0; width: 100%; border-top: thin solid grey; background-color: white; overflow: auto;">
+...
+</div><!-- #lowframe -->
+
+<div id="topbar" class="wide"><div class="container">
+<div class="top-heading" id="heading-wide"><a href="/wg/pkg/github.com/point-c/wg/">GoPages | Auto-generated docs</a></div>
+<div class="top-heading" id="heading-narrow"><a href="/wg/pkg/github.com/point-c/wg/">GoPages</a></div>
+<a href="#" id="menu-button"><span id="menu-button-arrow">&#9661;</span></a>
+
+</div></div>
+
+
+
+<div id="page" class="wide">
+<div class="container">
+
+
+  <h1>
+    Package wg
+    <span class="text-muted"></span>
+  </h1>
+
+
+
+
+
+
+
+<div id="nav"></div>
+
+
+<!--
+	Copyright 2009 The Go Authors. All rights reserved.
+	Use of this source code is governed by a BSD-style
+	license that can be found in the LICENSE file.
+-->
+<!--
+	Note: Static (i.e., not template-generated) href and id
+	attributes start with "pkg-" to make it impossible for
+	them to conflict with generated attributes (some of which
+	correspond to Go identifiers).
+-->
+
+	<script>
+	document.ANALYSIS_DATA = null;
+	document.CALLGRAPH = null;
+	</script>
+
+	
+		
+		<div id="short-nav">
+			<dl>
+			<dd><code>import "github.com/point-c/wg"</code></dd>
+			</dl>
+			<dl>
+			<dd><a href="#pkg-overview" class="overviewLink">Overview</a></dd>
+			<dd><a href="#pkg-index" class="indexLink">Index</a></dd>
+			
+			
+			</dl>
+		</div>
+		<!-- The package's Name is printed as title by the top-level template -->
+		<div id="pkg-overview" class="toggleVisible">
+			<div class="collapsed">
+				<h2 class="toggleButton" title="Click to show Overview section">Overview ▹</h2>
+			</div>
+			<div class="expanded">
+				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
+				<p>Package wg helps with the creation and usage of userland wireguard networks.
+
+				
+			</div>
+		</div>
+
+		<div id="pkg-index" class="toggleVisible">
+		<div class="collapsed">
+			<h2 class="toggleButton" title="Click to show Index section">Index ▹</h2>
+		</div>
+		<div class="expanded">
+			<h2 class="toggleButton" title="Click to hide Index section">Index ▾</h2>
+
+		<!-- Table of contents for API; must be named manual-nav to turn off auto nav. -->
+			<div id="manual-nav">
+			<dl>
+			
+				<dd><a href="#pkg-constants">Constants</a></dd>
+			
+			
+				<dd><a href="#pkg-variables">Variables</a></dd>
+			
+			
+			
+				
+				<dd><a href="#Bind">type Bind</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#defaultBind">func defaultBind() Bind</a></dd>
+				
+				
+			
+				
+				<dd><a href="#Device">type Device</a></dd>
+				
+				
+			
+				
+				<dd><a href="#Dialer">type Dialer</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Dialer.DialTCP">func (d *Dialer) DialTCP(ctx context.Context, addr *net.TCPAddr) (net.Conn, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Dialer.DialUDP">func (d *Dialer) DialUDP(addr *net.UDPAddr) (net.PacketConn, error)</a></dd>
+				
+			
+				
+				<dd><a href="#Net">type Net</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Net.Dialer">func (n *Net) Dialer(laddr net.IP, port uint16) *Dialer</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Net.Listen">func (n *Net) Listen(addr *net.TCPAddr) (net.Listener, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Net.ListenPacket">func (n *Net) ListenPacket(addr *net.UDPAddr) (net.PacketConn, error)</a></dd>
+				
+			
+				
+				<dd><a href="#Netstack">type Netstack</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#NewDefaultNetstack">func NewDefaultNetstack() (*Netstack, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#NewNetstack">func NewNetstack(mtu int, batchSize int, channelSize int) (*Netstack, error)</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Netstack.BatchSize">func (d *Netstack) BatchSize() int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Netstack.Close">func (d *Netstack) Close() error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Netstack.Events">func (d *Netstack) Events() &lt;-chan tun.Event</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Netstack.File">func (d *Netstack) File() *os.File</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Netstack.MTU">func (d *Netstack) MTU() (int, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Netstack.Name">func (d *Netstack) Name() (string, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Netstack.Net">func (d *Netstack) Net() *Net</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Netstack.Read">func (d *Netstack) Read(buf [][]byte, sizes []int, offset int) (n int, err error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Netstack.Write">func (d *Netstack) Write(buf [][]byte, offset int) (int, error)</a></dd>
+				
+			
+				
+				<dd><a href="#Option">type Option</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#OptionBind">func OptionBind(b Bind) Option</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#OptionCloser">func OptionCloser(closer func() error) Option</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#OptionConfig">func OptionConfig(cfg wgapi.Configurable) Option</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#OptionDevice">func OptionDevice(d Device) Option</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#OptionErr">func OptionErr(e error) Option</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#OptionLogger">func OptionLogger(l *device.Logger) Option</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#OptionNetDevice">func OptionNetDevice(p **Net) Option</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#OptionNop">func OptionNop() Option</a></dd>
+				
+				
+			
+				
+				<dd><a href="#TCPIPError">type TCPIPError</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#TCPIPError.Error">func (err *TCPIPError) Error() string</a></dd>
+				
+			
+				
+				<dd><a href="#Wireguard">type Wireguard</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#New">func New(opts ...Option) (_ *Wireguard, err error)</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Wireguard.Close">func (c *Wireguard) Close() (err error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Wireguard.GetConfig">func (c *Wireguard) GetConfig() (v wgapi.IPC, err error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Wireguard.SetConfig">func (c *Wireguard) SetConfig(cfg wgapi.Configurable) error</a></dd>
+				
+			
+				
+				<dd><a href="#options">type options</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#options.apply">func (o *options) apply(opts []Option) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#options.cleanUp">func (o *options) cleanUp(failed *bool, err *error)</a></dd>
+				
+			
+				
+				<dd><a href="#writeNotify">type writeNotify</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#writeNotify.WriteNotify">func (w *writeNotify) WriteNotify()</a></dd>
+				
+			
+			
+			</dl>
+			</div><!-- #manual-nav -->
+
+		
+
+		
+			<h3>Package files</h3>
+			<p>
+			<span style="font-size:90%">
+			
+				<a href="https://github.com/point-c/wg/blob/main/bind.go">bind.go</a>
+			
+				<a href="https://github.com/point-c/wg/blob/main/connection.go">connection.go</a>
+			
+				<a href="https://github.com/point-c/wg/blob/main/netstack.go">netstack.go</a>
+			
+				<a href="https://github.com/point-c/wg/blob/main/options.go">options.go</a>
+			
+			</span>
+			</p>
+		
+		</div><!-- .expanded -->
+		</div><!-- #pkg-index -->
+
+		
+
+		
+			<h2 id="pkg-constants">Constants</h2>
+			
+				
+				<pre>const (
+    <span class="comment">// WireguardHeaderSize is the size of a wireguard header. The MTU needed for the [Netstack] is &lt;actual hardware MTU&gt; - [WireguardHeaderSize].</span>
+    <span id="WireguardHeaderSize">WireguardHeaderSize</span> = 80
+    <span class="comment">// DefaultMTU is the default MTU as specified from wireguard-go</span>
+    <span id="DefaultMTU">DefaultMTU</span> = <a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/device/">device</a>.<a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/device/#DefaultMTU">DefaultMTU</a>
+    <span class="comment">// DefaultBatchSize is the default number of packets read/written from the [tun.Device] in one operation.</span>
+    <span id="DefaultBatchSize">DefaultBatchSize</span> = <a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/conn/">conn</a>.<a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/conn/#IdealBatchSize">IdealBatchSize</a>
+    <span class="comment">// DefaultChannelSize is the size of the packet queue for the underlaying [channel.Endpoint]</span>
+    <span id="DefaultChannelSize">DefaultChannelSize</span> = 8 * <a href="#DefaultBatchSize">DefaultBatchSize</a>
+)</pre>
+			
+		
+		
+			<h2 id="pkg-variables">Variables</h2>
+			
+				<p>DefaultBind is the default wireguard UDP listener.
+
+				<pre>var <span id="DefaultBind">DefaultBind</span> = defaultBind</pre>
+			
+				
+				<pre>var (
+    <span id="ErrNoDeviceSpecified">ErrNoDeviceSpecified</span> = <a href="https://pkg.go.dev/errors/">errors</a>.<a href="https://pkg.go.dev/errors/#New">New</a>(&#34;no device specified&#34;)
+)</pre>
+			
+				
+				<pre>var <span id="SetStackOptions">SetStackOptions</span> = func(s *<a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/stack/">stack</a>.<a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/stack/#Stack">Stack</a>, ep *<a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/link/channel/">channel</a>.<a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/link/channel/#Endpoint">Endpoint</a>, id *<a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/">tcpip</a>.<a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/#NICID">NICID</a>) <a href="https://pkg.go.dev/builtin/#error">error</a> {
+    <span class="comment">// Wireguard-go does this</span>
+    var <span id="enableSACK">enableSACK</span> <a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/">tcpip</a>.<a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/#TCPSACKEnabled">TCPSACKEnabled</a> = <a href="https://pkg.go.dev/builtin/#true">true</a>
+    if err := s.<a href="#SetTransportProtocolOption">SetTransportProtocolOption</a>(<a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/transport/tcp/">tcp</a>.<a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/transport/tcp/#ProtocolNumber">ProtocolNumber</a>, &amp;enableSACK); err != <a href="https://pkg.go.dev/builtin/#nil">nil</a> {
+        return &amp;<a href="#TCPIPError">TCPIPError</a>{<a href="#TCPIPError.Err">Err</a>: err}
+    }
+
+    *id = <a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/">tcpip</a>.<a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/#NICID">NICID</a>(s.<a href="#UniqueID">UniqueID</a>())
+    if err := s.<a href="#CreateNICWithOptions">CreateNICWithOptions</a>(*id, ep, <a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/stack/">stack</a>.<a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/stack/#NICOptions">NICOptions</a>{<a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/stack/#NICOptions.Name">Name</a>: &#34;&#34;}); err != <a href="https://pkg.go.dev/builtin/#nil">nil</a> {
+        return &amp;<a href="#TCPIPError">TCPIPError</a>{<a href="#TCPIPError.Err">Err</a>: err}
+    }
+    return <a href="https://pkg.go.dev/builtin/#nil">nil</a>
+}</pre>
+			
+				
+				<pre>var <span id="_">_</span> <a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/link/channel/">channel</a>.<a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/link/channel/#Notification">Notification</a> = (*writeNotify)(<a href="https://pkg.go.dev/builtin/#nil">nil</a>)</pre>
+			
+				
+				<pre>var <span id="_">_</span> interface {
+    Listen(*<a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#TCPAddr">TCPAddr</a>) (<a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#Listener">Listener</a>, <a href="https://pkg.go.dev/builtin/#error">error</a>)
+    ListenPacket(*<a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#UDPAddr">UDPAddr</a>) (<a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#PacketConn">PacketConn</a>, <a href="https://pkg.go.dev/builtin/#error">error</a>)
+    Dialer(<a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#IP">IP</a>, <a href="https://pkg.go.dev/builtin/#uint16">uint16</a>) *<a href="#Dialer">Dialer</a>
+} = (*<a href="#Net">Net</a>)(<a href="https://pkg.go.dev/builtin/#nil">nil</a>)</pre>
+			
+				
+				<pre>var <span id="_">_</span> interface {
+    DialTCP(<a href="https://pkg.go.dev/context/">context</a>.<a href="https://pkg.go.dev/context/#Context">Context</a>, *<a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#TCPAddr">TCPAddr</a>) (<a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#Conn">Conn</a>, <a href="https://pkg.go.dev/builtin/#error">error</a>)
+    DialUDP(*<a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#UDPAddr">UDPAddr</a>) (<a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#PacketConn">PacketConn</a>, <a href="https://pkg.go.dev/builtin/#error">error</a>)
+} = (*<a href="#Dialer">Dialer</a>)(<a href="https://pkg.go.dev/builtin/#nil">nil</a>)</pre>
+			
+		
+		
+		
+			
+			
+			<h2 id="Bind">type <a href="https://github.com/point-c/wg/blob/main/bind.go#L5">Bind</a>
+				<a class="permalink" href="#Bind">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type Bind = <a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/conn/">conn</a>.<a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/conn/#Bind">Bind</a></pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="defaultBind">func <a href="https://github.com/point-c/wg/blob/main/bind.go#L10">defaultBind</a>
+					<a class="permalink" href="#defaultBind">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func defaultBind() <a href="#Bind">Bind</a></pre>
+				
+				
+				
+			
+
+			
+		
+			
+			
+			<h2 id="Device">type <a href="https://github.com/point-c/wg/blob/main/netstack.go#L53">Device</a>
+				<a class="permalink" href="#Device">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type Device = <a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/tun/">tun</a>.<a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/tun/#Device">Device</a></pre>
+
+			
+
+			
+				
+				<pre>var <span id="_">_</span> <a href="#Device">Device</a> = (*<a href="#Netstack">Netstack</a>)(<a href="https://pkg.go.dev/builtin/#nil">nil</a>)</pre>
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Dialer">type <a href="https://github.com/point-c/wg/blob/main/netstack.go#L211">Dialer</a>
+				<a class="permalink" href="#Dialer">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Dialer handles dialing with a given local address
+
+			<pre>type Dialer struct {
+<span id="Dialer.net"></span>    net   *<a href="#Net">Net</a>
+<span id="Dialer.laddr"></span>    laddr <a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/">tcpip</a>.<a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/#FullAddress">FullAddress</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="Dialer.DialTCP">func (*Dialer) <a href="https://github.com/point-c/wg/blob/main/netstack.go#L258">DialTCP</a>
+					<a class="permalink" href="#Dialer.DialTCP">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (d *<a href="#Dialer">Dialer</a>) DialTCP(ctx <a href="https://pkg.go.dev/context/">context</a>.<a href="https://pkg.go.dev/context/#Context">Context</a>, addr *<a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#TCPAddr">TCPAddr</a>) (<a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#Conn">Conn</a>, <a href="https://pkg.go.dev/builtin/#error">error</a>)</pre>
+				<p>DialTCP initiates a TCP connection with a remote TCP listener.
+
+				
+				
+				
+			
+				
+				<h3 id="Dialer.DialUDP">func (*Dialer) <a href="https://github.com/point-c/wg/blob/main/netstack.go#L274">DialUDP</a>
+					<a class="permalink" href="#Dialer.DialUDP">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (d *<a href="#Dialer">Dialer</a>) DialUDP(addr *<a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#UDPAddr">UDPAddr</a>) (<a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#PacketConn">PacketConn</a>, <a href="https://pkg.go.dev/builtin/#error">error</a>)</pre>
+				<p>DialUDP dials a UDP network.
+Addresses in the 127.0.0.1/24 range
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Net">type <a href="https://github.com/point-c/wg/blob/main/netstack.go#L197">Net</a>
+				<a class="permalink" href="#Net">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Net handles the application level dialing/listening.
+
+			<pre>type Net <a href="#Netstack">Netstack</a></pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="Net.Dialer">func (*Net) <a href="https://github.com/point-c/wg/blob/main/netstack.go#L246">Dialer</a>
+					<a class="permalink" href="#Net.Dialer">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (n *<a href="#Net">Net</a>) Dialer(laddr <a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#IP">IP</a>, port <a href="https://pkg.go.dev/builtin/#uint16">uint16</a>) *<a href="#Dialer">Dialer</a></pre>
+				<p>Dialer creates a new dialer with a specified local address.
+
+				
+				
+				
+			
+				
+				<h3 id="Net.Listen">func (*Net) <a href="https://github.com/point-c/wg/blob/main/netstack.go#L220">Listen</a>
+					<a class="permalink" href="#Net.Listen">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (n *<a href="#Net">Net</a>) Listen(addr *<a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#TCPAddr">TCPAddr</a>) (<a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#Listener">Listener</a>, <a href="https://pkg.go.dev/builtin/#error">error</a>)</pre>
+				<p>Listen listens with the TCP protocol on the given address.
+
+				
+				
+				
+			
+				
+				<h3 id="Net.ListenPacket">func (*Net) <a href="https://github.com/point-c/wg/blob/main/netstack.go#L233">ListenPacket</a>
+					<a class="permalink" href="#Net.ListenPacket">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (n *<a href="#Net">Net</a>) ListenPacket(addr *<a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#UDPAddr">UDPAddr</a>) (<a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#PacketConn">PacketConn</a>, <a href="https://pkg.go.dev/builtin/#error">error</a>)</pre>
+				<p>ListenPacket listens with the UDP protocol on the given address
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Netstack">type <a href="https://github.com/point-c/wg/blob/main/netstack.go#L41">Netstack</a>
+				<a class="permalink" href="#Netstack">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Netstack is a wireguard device that takes the raw packets communicated through wireguard and turns them into meaningful TCP/UDP connections.
+
+			<pre>type Netstack struct {
+<span id="Netstack.ep"></span>    ep         *<a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/link/channel/">channel</a>.<a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/link/channel/#Endpoint">Endpoint</a>
+<span id="Netstack.stack"></span>    stack      *<a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/stack/">stack</a>.<a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/stack/#Stack">Stack</a>
+<span id="Netstack.events"></span>    events     chan <a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/tun/">tun</a>.<a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/tun/#Event">Event</a>
+<span id="Netstack.batchSize"></span>    batchSize  <a href="https://pkg.go.dev/builtin/#int">int</a>
+<span id="Netstack.close"></span>    close      <a href="https://pkg.go.dev/sync/">sync</a>.<a href="https://pkg.go.dev/sync/#Once">Once</a>
+<span id="Netstack.done"></span>    done       chan struct{}
+<span id="Netstack.read"></span>    read       chan []<a href="https://pkg.go.dev/builtin/#byte">byte</a>
+<span id="Netstack.defaultNIC"></span>    defaultNIC <a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/">tcpip</a>.<a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/#NICID">NICID</a>
+<span id="Netstack.mtu"></span>    mtu        <a href="https://pkg.go.dev/builtin/#int">int</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewDefaultNetstack">func <a href="https://github.com/point-c/wg/blob/main/netstack.go#L56">NewDefaultNetstack</a>
+					<a class="permalink" href="#NewDefaultNetstack">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewDefaultNetstack() (*<a href="#Netstack">Netstack</a>, <a href="https://pkg.go.dev/builtin/#error">error</a>)</pre>
+				<p>NewDefaultNetstack calls NewNetstack with the default values.
+
+				
+				
+			
+				
+				<h3 id="NewNetstack">func <a href="https://github.com/point-c/wg/blob/main/netstack.go#L61">NewNetstack</a>
+					<a class="permalink" href="#NewNetstack">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewNetstack(mtu <a href="https://pkg.go.dev/builtin/#int">int</a>, batchSize <a href="https://pkg.go.dev/builtin/#int">int</a>, channelSize <a href="https://pkg.go.dev/builtin/#int">int</a>) (*<a href="#Netstack">Netstack</a>, <a href="https://pkg.go.dev/builtin/#error">error</a>)</pre>
+				<p>NewNetstack creates a new wireguard network stack.
+
+				
+				
+			
+
+			
+				
+				<h3 id="Netstack.BatchSize">func (*Netstack) <a href="https://github.com/point-c/wg/blob/main/netstack.go#L159">BatchSize</a>
+					<a class="permalink" href="#Netstack.BatchSize">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (d *<a href="#Netstack">Netstack</a>) BatchSize() <a href="https://pkg.go.dev/builtin/#int">int</a></pre>
+				<p>BatchSize implements <a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/tun#Device.BatchSize">tun.Device.BatchSize</a> and returns the configured BatchSize
+
+				
+				
+				
+			
+				
+				<h3 id="Netstack.Close">func (*Netstack) <a href="https://github.com/point-c/wg/blob/main/netstack.go#L117">Close</a>
+					<a class="permalink" href="#Netstack.Close">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (d *<a href="#Netstack">Netstack</a>) Close() <a href="https://pkg.go.dev/builtin/#error">error</a></pre>
+				<p>Close closes the network stack rendering it unusable in the future.
+
+				
+				
+				
+			
+				
+				<h3 id="Netstack.Events">func (*Netstack) <a href="https://github.com/point-c/wg/blob/main/netstack.go#L156">Events</a>
+					<a class="permalink" href="#Netstack.Events">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (d *<a href="#Netstack">Netstack</a>) Events() &lt;-chan <a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/tun/">tun</a>.<a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/tun/#Event">Event</a></pre>
+				<p>Events implements <a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/tun#Device.Events">tun.Device.Events</a>
+
+				
+				
+				
+			
+				
+				<h3 id="Netstack.File">func (*Netstack) <a href="https://github.com/point-c/wg/blob/main/netstack.go#L147">File</a>
+					<a class="permalink" href="#Netstack.File">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (d *<a href="#Netstack">Netstack</a>) File() *<a href="https://pkg.go.dev/os/">os</a>.<a href="https://pkg.go.dev/os/#File">File</a></pre>
+				<p>File implements <a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/tun#Device.File">tun.Device.File</a> and always returns nil
+
+				
+				
+				
+			
+				
+				<h3 id="Netstack.MTU">func (*Netstack) <a href="https://github.com/point-c/wg/blob/main/netstack.go#L153">MTU</a>
+					<a class="permalink" href="#Netstack.MTU">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (d *<a href="#Netstack">Netstack</a>) MTU() (<a href="https://pkg.go.dev/builtin/#int">int</a>, <a href="https://pkg.go.dev/builtin/#error">error</a>)</pre>
+				<p>MTU implements <a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/tun#Device.MTU">tun.Device.MTU</a> and returns the configured MTU
+
+				
+				
+				
+			
+				
+				<h3 id="Netstack.Name">func (*Netstack) <a href="https://github.com/point-c/wg/blob/main/netstack.go#L150">Name</a>
+					<a class="permalink" href="#Netstack.Name">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (d *<a href="#Netstack">Netstack</a>) Name() (<a href="https://pkg.go.dev/builtin/#string">string</a>, <a href="https://pkg.go.dev/builtin/#error">error</a>)</pre>
+				<p>Name implements <a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/tun#Device.Name">tun.Device.Name</a> and always returns &quot;point-c&quot;
+
+				
+				
+				
+			
+				
+				<h3 id="Netstack.Net">func (*Netstack) <a href="https://github.com/point-c/wg/blob/main/netstack.go#L217">Net</a>
+					<a class="permalink" href="#Netstack.Net">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (d *<a href="#Netstack">Netstack</a>) Net() *<a href="#Net">Net</a></pre>
+				<p>Net allows using the device similar to the <a href="https://pkg.go.dev/net">net</a> package.
+
+				
+				
+				
+			
+				
+				<h3 id="Netstack.Read">func (*Netstack) <a href="https://github.com/point-c/wg/blob/main/netstack.go#L162">Read</a>
+					<a class="permalink" href="#Netstack.Read">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (d *<a href="#Netstack">Netstack</a>) Read(buf [][]<a href="https://pkg.go.dev/builtin/#byte">byte</a>, sizes []<a href="https://pkg.go.dev/builtin/#int">int</a>, offset <a href="https://pkg.go.dev/builtin/#int">int</a>) (n <a href="https://pkg.go.dev/builtin/#int">int</a>, err <a href="https://pkg.go.dev/builtin/#error">error</a>)</pre>
+				<p>Read will always read exactly one packet at a time.
+
+				
+				
+				
+			
+				
+				<h3 id="Netstack.Write">func (*Netstack) <a href="https://github.com/point-c/wg/blob/main/netstack.go#L173">Write</a>
+					<a class="permalink" href="#Netstack.Write">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (d *<a href="#Netstack">Netstack</a>) Write(buf [][]<a href="https://pkg.go.dev/builtin/#byte">byte</a>, offset <a href="https://pkg.go.dev/builtin/#int">int</a>) (<a href="https://pkg.go.dev/builtin/#int">int</a>, <a href="https://pkg.go.dev/builtin/#error">error</a>)</pre>
+				<p>Write will write all packets given to it to the underlaying netstack.
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Option">type <a href="https://github.com/point-c/wg/blob/main/options.go#L10">Option</a>
+				<a class="permalink" href="#Option">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type Option func(*options) <a href="https://pkg.go.dev/builtin/#error">error</a></pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="OptionBind">func <a href="https://github.com/point-c/wg/blob/main/options.go#L56">OptionBind</a>
+					<a class="permalink" href="#OptionBind">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func OptionBind(b <a href="#Bind">Bind</a>) <a href="#Option">Option</a></pre>
+				<p>OptionBind sets the Bind in the [options] struct. If this is not specified <a href="#DefaultBind">DefaultBind</a> will be used.
+
+				
+				
+			
+				
+				<h3 id="OptionCloser">func <a href="https://github.com/point-c/wg/blob/main/options.go#L101">OptionCloser</a>
+					<a class="permalink" href="#OptionCloser">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func OptionCloser(closer func() <a href="https://pkg.go.dev/builtin/#error">error</a>) <a href="#Option">Option</a></pre>
+				<p>OptionCloser adds a closer function to the [options] struct.
+Closer functions are called to gracefully close resources when needed.
+
+				
+				
+			
+				
+				<h3 id="OptionConfig">func <a href="https://github.com/point-c/wg/blob/main/options.go#L72">OptionConfig</a>
+					<a class="permalink" href="#OptionConfig">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func OptionConfig(cfg <a href="/wg/pkg/github.com/point-c/wgapi/">wgapi</a>.<a href="/wg/pkg/github.com/point-c/wgapi/#Configurable">Configurable</a>) <a href="#Option">Option</a></pre>
+				<p>OptionConfig specifies a wireguard config to load before the interface is brought up.
+
+				
+				
+			
+				
+				<h3 id="OptionDevice">func <a href="https://github.com/point-c/wg/blob/main/options.go#L48">OptionDevice</a>
+					<a class="permalink" href="#OptionDevice">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func OptionDevice(d <a href="#Device">Device</a>) <a href="#Option">Option</a></pre>
+				<p>OptionDevice specifies the Device in the [options] struct.
+
+				
+				
+			
+				
+				<h3 id="OptionErr">func <a href="https://github.com/point-c/wg/blob/main/options.go#L45">OptionErr</a>
+					<a class="permalink" href="#OptionErr">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func OptionErr(e <a href="https://pkg.go.dev/builtin/#error">error</a>) <a href="#Option">Option</a></pre>
+				<p>OptionErr causes <a href="#New">New</a> to fail with the given error
+
+				
+				
+			
+				
+				<h3 id="OptionLogger">func <a href="https://github.com/point-c/wg/blob/main/options.go#L64">OptionLogger</a>
+					<a class="permalink" href="#OptionLogger">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func OptionLogger(l *<a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/device/">device</a>.<a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/device/#Logger">Logger</a>) <a href="#Option">Option</a></pre>
+				<p>OptionLogger adds a logger to the [options] struct.
+
+				
+				
+			
+				
+				<h3 id="OptionNetDevice">func <a href="https://github.com/point-c/wg/blob/main/options.go#L82">OptionNetDevice</a>
+					<a class="permalink" href="#OptionNetDevice">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func OptionNetDevice(p **<a href="#Net">Net</a>) <a href="#Option">Option</a></pre>
+				<p>OptionNetDevice initializes a userspace networking stack.
+Note: The pointer *p becomes valid and usable only if the <a href="#New">New</a> function successfully
+completes without returning an error. In case of errors, *p should not be considered reliable.
+
+				
+				
+			
+				
+				<h3 id="OptionNop">func <a href="https://github.com/point-c/wg/blob/main/options.go#L42">OptionNop</a>
+					<a class="permalink" href="#OptionNop">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func OptionNop() <a href="#Option">Option</a></pre>
+				<p>OptionNop is an <a href="#Option">Option</a> function that does nothing. Useful as a placeholder.
+
+				
+				
+			
+
+			
+		
+			
+			
+			<h2 id="TCPIPError">type <a href="https://github.com/point-c/wg/blob/main/netstack.go#L192">TCPIPError</a>
+				<a class="permalink" href="#TCPIPError">&#xb6;</a>
+				
+				
+			</h2>
+			<p>TCPIPError turn a <a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip#Error">tcpip.Error</a> into a normal error.
+
+			<pre>type TCPIPError struct{ Err <a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/">tcpip</a>.<a href="https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip/#Error">Error</a> }
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="TCPIPError.Error">func (*TCPIPError) <a href="https://github.com/point-c/wg/blob/main/netstack.go#L194">Error</a>
+					<a class="permalink" href="#TCPIPError.Error">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (err *<a href="#TCPIPError">TCPIPError</a>) Error() <a href="https://pkg.go.dev/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Wireguard">type <a href="https://github.com/point-c/wg/blob/main/connection.go#L13">Wireguard</a>
+				<a class="permalink" href="#Wireguard">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Wireguard handles configuring and closing a wireguard client/server.
+
+			<pre>type Wireguard struct {
+<span id="Wireguard.dev"></span>    dev     *<a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/device/">device</a>.<a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/device/#Device">Device</a>
+<span id="Wireguard.close"></span>    close   <a href="https://pkg.go.dev/sync/atomic/">atomic</a>.<a href="https://pkg.go.dev/sync/atomic/#Pointer">Pointer</a>[<a href="https://pkg.go.dev/builtin/#error">error</a>]
+<span id="Wireguard.closers"></span>    closers []func() <a href="https://pkg.go.dev/builtin/#error">error</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="New">func <a href="https://github.com/point-c/wg/blob/main/connection.go#L24">New</a>
+					<a class="permalink" href="#New">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func New(opts ...<a href="#Option">Option</a>) (_ *<a href="#Wireguard">Wireguard</a>, err <a href="https://pkg.go.dev/builtin/#error">error</a>)</pre>
+				<p>New allows the creating of a new wireguard interface.
+
+				
+				
+			
+
+			
+				
+				<h3 id="Wireguard.Close">func (*Wireguard) <a href="https://github.com/point-c/wg/blob/main/connection.go#L84">Close</a>
+					<a class="permalink" href="#Wireguard.Close">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (c *<a href="#Wireguard">Wireguard</a>) Close() (err <a href="https://pkg.go.dev/builtin/#error">error</a>)</pre>
+				<p>Close closes the wireguard server/client, rendering it unusable in the future.
+
+				
+				
+				
+			
+				
+				<h3 id="Wireguard.GetConfig">func (*Wireguard) <a href="https://github.com/point-c/wg/blob/main/connection.go#L70">GetConfig</a>
+					<a class="permalink" href="#Wireguard.GetConfig">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (c *<a href="#Wireguard">Wireguard</a>) GetConfig() (v <a href="/wg/pkg/github.com/point-c/wgapi/">wgapi</a>.<a href="/wg/pkg/github.com/point-c/wgapi/#IPC">IPC</a>, err <a href="https://pkg.go.dev/builtin/#error">error</a>)</pre>
+				<p>GetConfig gets the raw config from an IPC get=1 operation.
+
+				
+				
+				
+			
+				
+				<h3 id="Wireguard.SetConfig">func (*Wireguard) <a href="https://github.com/point-c/wg/blob/main/connection.go#L79">SetConfig</a>
+					<a class="permalink" href="#Wireguard.SetConfig">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (c *<a href="#Wireguard">Wireguard</a>) SetConfig(cfg <a href="/wg/pkg/github.com/point-c/wgapi/">wgapi</a>.<a href="/wg/pkg/github.com/point-c/wgapi/#Configurable">Configurable</a>) <a href="https://pkg.go.dev/builtin/#error">error</a></pre>
+				<p>SetConfig performs an IPC set=1 operation.
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="options">type <a href="https://github.com/point-c/wg/blob/main/options.go#L12">options</a>
+				<a class="permalink" href="#options">&#xb6;</a>
+				
+				
+			</h2>
+			<p>options holds settings for an interface.
+
+			<pre>type options struct {
+<span id="options.tun"></span>    tun     <a href="#Device">Device</a>              <span class="comment">// tun is a required network for unencrypted traffic.</span>
+<span id="options.bind"></span>    bind    <a href="#Bind">Bind</a>                <span class="comment">// bind is the network for encrypted traffic.</span>
+<span id="options.loggers"></span>    loggers []*<a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/device/">device</a>.<a href="https://pkg.go.dev/golang.zx2c4.com/wireguard/device/#Logger">Logger</a>    <span class="comment">// loggers is a slice of Logger instances for logging purposes.</span>
+<span id="options.cfg"></span>    cfg     *<a href="/wg/pkg/github.com/point-c/wgapi/">wgapi</a>.<a href="/wg/pkg/github.com/point-c/wgapi/#Configurable">Configurable</a> <span class="comment">// cfg is an initial IPC configuration.</span>
+<span id="options.closer"></span>    closer  []func() <a href="https://pkg.go.dev/builtin/#error">error</a>      <span class="comment">// closer is the resources that need to be cleaned up.</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="options.apply">func (*options) <a href="https://github.com/point-c/wg/blob/main/options.go#L22">apply</a>
+					<a class="permalink" href="#options.apply">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (o *options) apply(opts []<a href="#Option">Option</a>) <a href="https://pkg.go.dev/builtin/#error">error</a></pre>
+				<p>apply applies a slice of <a href="#Option">Option</a> functions to the [options] struct.
+
+				
+				
+				
+			
+				
+				<h3 id="options.cleanUp">func (*options) <a href="https://github.com/point-c/wg/blob/main/options.go#L33">cleanUp</a>
+					<a class="permalink" href="#options.cleanUp">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (o *options) cleanUp(failed *<a href="https://pkg.go.dev/builtin/#bool">bool</a>, err *<a href="https://pkg.go.dev/builtin/#error">error</a>)</pre>
+				<p>cleanUp closes any open resources in the event of a failure.
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="writeNotify">type <a href="https://github.com/point-c/wg/blob/main/netstack.go#L130">writeNotify</a>
+				<a class="permalink" href="#writeNotify">&#xb6;</a>
+				
+				
+			</h2>
+			<p>writeNotify is required by the netstack
+
+			<pre>type writeNotify <a href="#Netstack">Netstack</a></pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="writeNotify.WriteNotify">func (*writeNotify) <a href="https://github.com/point-c/wg/blob/main/netstack.go#L132">WriteNotify</a>
+					<a class="permalink" href="#writeNotify.WriteNotify">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (w *writeNotify) WriteNotify()</pre>
+				
+				
+				
+				
+			
+		
+	
+
+	
+
+
+
+
+
+
+
+<div id="footer">
+Build version go1.21.6.<br>
+</div>
+
+</div><!-- .container -->
+</div><!-- #page -->
+</body>
+</html>

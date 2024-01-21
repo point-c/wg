@@ -22,38 +22,46 @@ var (
 
 // New allows the creating of a new wireguard interface.
 func New(opts ...Option) (_ *Wireguard, err error) {
+	// apply options
 	var o options
 	if err = o.apply(opts); err != nil {
 		return nil, err
 	}
 
+	// no recover check for panic
 	failed := true
 	defer o.cleanUp(&failed, &err)
 
+	// require tun to be set
 	if o.tun == nil {
 		return nil, ErrNoDeviceSpecified
 	}
 
+	// if bind is not set use default
 	if o.bind == nil {
 		o.bind = DefaultBind()
 		o.closer = append(o.closer, o.bind.Close)
 	}
 
+	// create wireguard device with tun, bind, and loggers
 	c := &Wireguard{dev: device.NewDevice(o.tun, o.bind, wglog.Multi(o.loggers...))}
 	defer func() { c.closers = o.closer }()
 	o.closer = append(o.closer, func() error { c.dev.Close(); return nil })
 
+	// update wireguard config
 	if o.cfg != nil {
 		if err := c.SetConfig(*o.cfg); err != nil {
 			return nil, err
 		}
 	}
 
+	// bring device up
 	if err := c.dev.Up(); err != nil {
 		return nil, err
 	}
 	o.closer = append(o.closer, c.dev.Down)
 
+	// success
 	failed = false
 	return c, nil
 }

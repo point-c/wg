@@ -1,14 +1,22 @@
 # wg
 
-![Wireguard](https://img.shields.io/badge/wireguard-%2388171A.svg?style=for-the-badge&logo=wireguard&logoColor=white)
+[![Wireguard](https://img.shields.io/badge/wireguard-%2388171A.svg?logo=wireguard)](https://www.wireguard.com/)
 [![Go Reference](https://img.shields.io/badge/godoc-reference-%23007d9c.svg)](https://point-c.github.io/wg)
 
-wg is a library designed to facilitate the creation and management of userland WireGuard networks. It interfaces with various components of the wireguard-go library, offering a Go-based API for network operations.
+wg is a library designed to facilitate the creation and management of userland WireGuard networks. It interfaces with various components of the wireguard-go library, offering a Go API for network operations.
 
 ## Features
 - **Device Management**: Control over WireGuard devices, including creation, configuration, and teardown.
 - **Network Configuration**: Tools for setting up and managing a network stack that communicates through wireguard.
-- **Advanced Networking**: Dial as any address inside the tunnel, allowing remote applications to see the correct remote.
+- **Advanced Networking**: Dial as any address inside the tunnel, allowing remote applications to see the correct remote address.
+
+## Installation
+
+To use wg in your Go project, install it using `go get`:
+
+```bash
+go get github.com/point-c/wg
+```
 
 ## Usage
 
@@ -105,3 +113,19 @@ dev, err := wg.New(wg.OptionNetDevice(&n))
 #### `OptionCloser`
 
 Adds a function to be called when closing the device.
+
+## Testing
+
+The package includes tests that demonstrate its functionality. Use Go's testing tools to run the tests:
+
+```bash
+go test
+```
+
+## Godocs
+
+To regenerate godocs:
+
+```bash
+go generate -tags docs ./...
+```

@@ -126,6 +126,7 @@ func (d *Netstack) Close() error {
 
 var _ channel.Notification = (*writeNotify)(nil)
 
+// writeNotify is required by the netstack
 type writeNotify Netstack
 
 func (w *writeNotify) WriteNotify() {
