@@ -4,7 +4,6 @@ go 1.21.5
 
 require (
 	github.com/johnstarich/go/gopages v0.1.25
-	github.com/point-c/ipcheck v0.1.0
 	github.com/point-c/simplewg v0.1.0
 	github.com/point-c/wgapi v0.1.0
 	github.com/point-c/wglog v0.1.0
@@ -42,4 +41,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-retract [v0.0.1,v0.0.6] // dev version
+retract [v0.0.1, v0.0.6] // dev version

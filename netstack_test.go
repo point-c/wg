@@ -3,8 +3,8 @@ package wg
 import (
 	"context"
 	"errors"
-	"github.com/point-c/ipcheck"
 	"github.com/point-c/simplewg"
+	"github.com/point-c/wg/pkg/ipcheck"
 	"github.com/stretchr/testify/require"
 	"gvisor.dev/gvisor/pkg/buffer"
 	"gvisor.dev/gvisor/pkg/tcpip"

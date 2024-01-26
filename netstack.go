@@ -2,7 +2,7 @@ package wg
 
 import (
 	"context"
-	"github.com/point-c/ipcheck"
+	"github.com/point-c/wg/pkg/ipcheck"
 	"golang.zx2c4.com/wireguard/conn"
 	"golang.zx2c4.com/wireguard/device"
 	"golang.zx2c4.com/wireguard/tun"

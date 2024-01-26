@@ -20,6 +20,8 @@ go get github.com/point-c/wg
 
 ## Usage
 
+Configuration is handled by the [wgapi](https://github.com/point-c/wgapi) library.
+
 ### Basic
 
 ```go

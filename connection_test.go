@@ -3,7 +3,7 @@ package wg
 import (
 	"context"
 	"errors"
-	"github.com/point-c/ipcheck"
+	"github.com/point-c/wg/pkg/ipcheck"
 	"github.com/point-c/wgapi"
 	"github.com/point-c/wgapi/wgconfig"
 	"github.com/point-c/wglog"
@@ -75,7 +75,6 @@ func TestTCPConnection(t *testing.T) {
 }
 
 func textCtxDeadline(t *testing.T, ctx context.Context) (context.Context, context.CancelFunc) {
-	t.Helper()
 	if d, ok := t.Deadline(); ok {
 		return context.WithDeadline(ctx, d)
 	}
@@ -93,14 +92,12 @@ type NetPair struct {
 }
 
 func (np *NetPair) Closer() {
-	np.t.Helper()
 	defer np.Bindcloser()
 	defer np.ClientCloser()
 	defer np.ServerCloser()
 }
 
 func netPair(t testing.TB) *NetPair {
-	t.Helper()
 	pair := NetPair{t: t}
 	pair.ClientIP = net.IPv4(192, 168, 123, 2)
 	clientConfig, serverConfig, err := wgconfig.GenerateConfigPair(&net.UDPAddr{IP: net.IPv4(1, 1, 1, 1), Port: 1}, pair.ClientIP)
@@ -132,7 +129,6 @@ func netPair(t testing.TB) *NetPair {
 }
 
 func GetNet(t testing.TB, bind conn.Bind, cfg wgapi.Configurable) (*Net, func()) {
-	t.Helper()
 	logger := wglog.Noop()
 	if logWG {
 		logger = testLogger(t)
@@ -147,7 +143,6 @@ func GetNet(t testing.TB, bind conn.Bind, cfg wgapi.Configurable) (*Net, func())
 	}
 
 	return n, func() {
-		t.Helper()
 		if err := c.Close(); err != nil {
 			t.Log(err)
 			t.Fail()
@@ -156,14 +151,11 @@ func GetNet(t testing.TB, bind conn.Bind, cfg wgapi.Configurable) (*Net, func())
 }
 
 func testLogger(t testing.TB) *device.Logger {
-	t.Helper()
 	return &device.Logger{
 		Verbosef: func(format string, args ...any) {
-			t.Helper()
 			t.Logf("ERROR: "+format, args...)
 		},
 		Errorf: func(format string, args ...any) {
-			t.Helper()
 			t.Logf("INFO:  "+format, args...)
 		},
 	}
@@ -241,14 +233,12 @@ type testErrBadBindOpen struct {
 }
 
 func (t testErrBadBindOpen) Open(port uint16) (fns []conn.ReceiveFunc, actualPort uint16, err error) {
-	t.Helper()
 	return nil, port, t.err
 }
-func (t testErrBadBindOpen) Close() error                       { t.Helper(); return nil }
-func (t testErrBadBindOpen) SetMark(uint32) error               { t.Helper(); panic("not implemented") }
-func (t testErrBadBindOpen) Send([][]byte, conn.Endpoint) error { t.Helper(); panic("not implemented") }
+func (t testErrBadBindOpen) Close() error                       { return nil }
+func (t testErrBadBindOpen) SetMark(uint32) error               { panic("not implemented") }
+func (t testErrBadBindOpen) Send([][]byte, conn.Endpoint) error { panic("not implemented") }
 func (t testErrBadBindOpen) ParseEndpoint(string) (conn.Endpoint, error) {
-	t.Helper()
 	panic("not implemented")
 }
 func (t testErrBadBindOpen) BatchSize() int { return 0 }
@@ -256,7 +246,6 @@ func (t testErrBadBindOpen) BatchSize() int { return 0 }
 type testErrConfig struct{ testing.TB }
 
 func (t testErrConfig) WGConfig() io.Reader {
-	t.Helper()
 	return strings.NewReader(`foo=bar
 `)
 }
