@@ -98,6 +98,11 @@ If not specified `DefaultBind` is used.
 
 Specify a `device.Logger` to pass to the `wireguard-go` library.
 
+##### Logger Utilities
+
+- [**wgevents**](https://github.com/point-c/wgevents): Structured logging from the `wireguard-go` library.
+- [**wglog**](https://github.com/point-c/wglog): Logging utilities for `wireguard-go`.
+
 #### `OptionConfig`
 
 Configuration to use when configuring `wireguard-go`.

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#375EAB">
+
+  <title>ipcheck - GoPages</title>
+
+<link type="text/css" rel="stylesheet" href="/wg/lib/godoc/style.css">
+
+<script>window.initFuncs = [];</script>
+<script src="/wg/lib/godoc/jquery.js" defer></script>
+
+
+
+
+<script>var goVersion = "go1.21.6";</script>
+<script src="/wg/lib/godoc/godocs.js" defer></script>
+
+</head>
+<body>
+
+<div id='lowframe' style="position: fixed; bottom: 0; left: 0; height: 0; width: 100%; border-top: thin solid grey; background-color: white; overflow: auto;">
+...
+</div><!-- #lowframe -->
+
+<div id="topbar" class="wide"><div class="container">
+<div class="top-heading" id="heading-wide"><a href="/wg/pkg/github.com/point-c/wg/">GoPages | Auto-generated docs</a></div>
+<div class="top-heading" id="heading-narrow"><a href="/wg/pkg/github.com/point-c/wg/">GoPages</a></div>
+<a href="#" id="menu-button"><span id="menu-button-arrow">&#9661;</span></a>
+
+</div></div>
+
+
+
+<div id="page" class="wide">
+<div class="container">
+
+
+  <h1>
+    Package ipcheck
+    <span class="text-muted"></span>
+  </h1>
+
+
+
+
+
+
+
+<div id="nav"></div>
+
+
+<!--
+	Copyright 2009 The Go Authors. All rights reserved.
+	Use of this source code is governed by a BSD-style
+	license that can be found in the LICENSE file.
+-->
+<!--
+	Note: Static (i.e., not template-generated) href and id
+	attributes start with "pkg-" to make it impossible for
+	them to conflict with generated attributes (some of which
+	correspond to Go identifiers).
+-->
+
+	<script>
+	document.ANALYSIS_DATA = null;
+	document.CALLGRAPH = null;
+	</script>
+
+	
+		
+		<div id="short-nav">
+			<dl>
+			<dd><code>import "github.com/point-c/wg/pkg/ipcheck"</code></dd>
+			</dl>
+			<dl>
+			<dd><a href="#pkg-overview" class="overviewLink">Overview</a></dd>
+			<dd><a href="#pkg-index" class="indexLink">Index</a></dd>
+			
+			
+			</dl>
+		</div>
+		<!-- The package's Name is printed as title by the top-level template -->
+		<div id="pkg-overview" class="toggleVisible">
+			<div class="collapsed">
+				<h2 class="toggleButton" title="Click to show Overview section">Overview ▹</h2>
+			</div>
+			<div class="expanded">
+				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
+				
+				
+			</div>
+		</div>
+
+		<div id="pkg-index" class="toggleVisible">
+		<div class="collapsed">
+			<h2 class="toggleButton" title="Click to show Index section">Index ▹</h2>
+		</div>
+		<div class="expanded">
+			<h2 class="toggleButton" title="Click to hide Index section">Index ▾</h2>
+
+		<!-- Table of contents for API; must be named manual-nav to turn off auto nav. -->
+			<div id="manual-nav">
+			<dl>
+			
+			
+				<dd><a href="#pkg-variables">Variables</a></dd>
+			
+			
+				
+				<dd><a href="#IsBogon">func IsBogon(ip net.IP, extra ...func(net.IP) bool) bool</a></dd>
+			
+				
+				<dd><a href="#IsLinkLocal">func IsLinkLocal(ip net.IP) bool</a></dd>
+			
+				
+				<dd><a href="#IsLoopback">func IsLoopback(ip net.IP) bool</a></dd>
+			
+				
+				<dd><a href="#IsPrivateNetwork">func IsPrivateNetwork(ip net.IP) bool</a></dd>
+			
+			
+			
+			</dl>
+			</div><!-- #manual-nav -->
+
+		
+
+		
+			<h3>Package files</h3>
+			<p>
+			<span style="font-size:90%">
+			
+				<a href="https://github.com/point-c/wg/blob/main/pkg/ipcheck/ipcheck.go">ipcheck.go</a>
+			
+			</span>
+			</p>
+		
+		</div><!-- .expanded -->
+		</div><!-- #pkg-index -->
+
+		
+
+		
+		
+			<h2 id="pkg-variables">Variables</h2>
+			
+				<p>Error variables for invalid IP addresses
+
+				<pre>var (
+    <span id="ErrInvalidLocalIP">ErrInvalidLocalIP</span>  = <a href="https://pkg.go.dev/errors/">errors</a>.<a href="https://pkg.go.dev/errors/#New">New</a>(&#34;local ip is invalid&#34;)
+    <span id="ErrInvalidRemoteIP">ErrInvalidRemoteIP</span> = <a href="https://pkg.go.dev/errors/">errors</a>.<a href="https://pkg.go.dev/errors/#New">New</a>(&#34;remote ip is invalid&#34;)
+)</pre>
+			
+		
+		
+			
+			
+			<h2 id="IsBogon">func <a href="https://github.com/point-c/wg/blob/main/pkg/ipcheck/ipcheck.go#L39">IsBogon</a>
+				<a class="permalink" href="#IsBogon">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func IsBogon(ip <a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#IP">IP</a>, extra ...func(<a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#IP">IP</a>) <a href="https://pkg.go.dev/builtin/#bool">bool</a>) <a href="https://pkg.go.dev/builtin/#bool">bool</a></pre>
+			<p>IsBogon returns true if dialing the address would fail due to gonet restrictions.
+A bogon address is a packet routed on the public internet that claims to originate from an area of the IP address space reserved or not yet allocated.
+This function checks against known bogon conditions including loopback, link-local, and other special addresses.
+Additional conditions can be specified through the extra parameter.
+
+			
+			
+
+		
+			
+			
+			<h2 id="IsLinkLocal">func <a href="https://github.com/point-c/wg/blob/main/pkg/ipcheck/ipcheck.go#L12">IsLinkLocal</a>
+				<a class="permalink" href="#IsLinkLocal">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func IsLinkLocal(ip <a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#IP">IP</a>) <a href="https://pkg.go.dev/builtin/#bool">bool</a></pre>
+			<p>IsLinkLocal determines if the provided IP address is a link-local address.
+Link-local addresses are used in a single network segment and not routable on the larger internet.
+This function checks if the IP belongs to the IPv4 link-local range (169.254.0.0/16) or
+the IPv6 link-local range (fe80::/64).
+
+			
+			
+
+		
+			
+			
+			<h2 id="IsLoopback">func <a href="https://github.com/point-c/wg/blob/main/pkg/ipcheck/ipcheck.go#L19">IsLoopback</a>
+				<a class="permalink" href="#IsLoopback">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func IsLoopback(ip <a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#IP">IP</a>) <a href="https://pkg.go.dev/builtin/#bool">bool</a></pre>
+			<p>IsLoopback determines if the IP is either the standard IPv6 loopback (::1) or within the IPv4 loopback range.
+
+			
+			
+
+		
+			
+			
+			<h2 id="IsPrivateNetwork">func <a href="https://github.com/point-c/wg/blob/main/pkg/ipcheck/ipcheck.go#L27">IsPrivateNetwork</a>
+				<a class="permalink" href="#IsPrivateNetwork">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func IsPrivateNetwork(ip <a href="https://pkg.go.dev/net/">net</a>.<a href="https://pkg.go.dev/net/#IP">IP</a>) <a href="https://pkg.go.dev/builtin/#bool">bool</a></pre>
+			<p>IsPrivateNetwork returns true if the address belongs to a private network.
+This function checks against standard private IPv4 ranges (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16) and the IPv6 unique local address range (fd00::/8).
+
+			
+			
+
+		
+		
+	
+
+	
+
+
+
+
+
+
+
+<div id="footer">
+Build version go1.21.6.<br>
+</div>
+
+</div><!-- .container -->
+</div><!-- #page -->
+</body>
+</html>
